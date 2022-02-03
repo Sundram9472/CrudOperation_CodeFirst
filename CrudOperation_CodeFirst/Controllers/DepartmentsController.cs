@@ -14,10 +14,11 @@ namespace CrudOperation_CodeFirst.Controllers
     public class DepartmentsController : Controller
     {
         private readonly IDepartmentRepo _DepartmentDetails;
-
-        public DepartmentsController(IDepartmentRepo departmentdetails)
+        private readonly AppDbContext _Context;
+        public DepartmentsController(IDepartmentRepo departmentdetails,AppDbContext appdbcontext)
         {
             _DepartmentDetails = departmentdetails;
+            _Context = appdbcontext;
         }
 
 
@@ -47,7 +48,7 @@ namespace CrudOperation_CodeFirst.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View("Error","Error");
             }
             var departmentDetailsById = await _DepartmentDetails.GetDepartmentById(id);
             try
@@ -189,16 +190,34 @@ namespace CrudOperation_CodeFirst.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var deleteDataConfirmed = await _DepartmentDetails.DeleteDepartment(id);
+          
             try
             {
-                if (deleteDataConfirmed != null)
+                var CountEployee = await _Context.Employee_sk.CountAsync(x => x.DepartmentId == id);
+                if (CountEployee > 0)
                 {
-                    return RedirectToAction("Index");
+                        var allDepartment = await _DepartmentDetails.GetAllDepartment();
+                        if (allDepartment != null)
+                        {
+                            ViewData["Message"] = "You are Not Delete Department Beacause This Department Related Employee Found ! Firstly Remove Employee Then Remove Department";
+                            return View("Index",allDepartment);
+                        }
+                        else
+                        {
+                            return NotFound();
+                        }
                 }
                 else
                 {
-                    return NotFound();
+                    var deleteDataConfirmed = await _DepartmentDetails.DeleteDepartment(id);
+                    if (deleteDataConfirmed != null)
+                    {
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
                 }
             }
             catch(Exception ex)

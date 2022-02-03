@@ -73,9 +73,24 @@ namespace CrudOperation_CodeFirst.Controllers
         // GET: Employees/Create
         public IActionResult Create()
         {
-            var depList = _context.Department_sk.ToList();
-            ViewBag.Department_Id = new SelectList(depList, nameof(Department.DepartmentId), nameof(Department.DepartmentName));
-            return View();
+            try
+            {
+                var depList = _context.Department_sk.ToList();
+                var depcheck = _context.Department_sk.Count();
+                if (depcheck > 0)
+                {
+                    ViewBag.Department_Id = new SelectList(depList, nameof(Department.DepartmentId), nameof(Department.DepartmentName));
+                    return View();
+                }
+                else
+                {
+                    throw new Exception("No Department Found");
+                }
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         [HttpPost]
@@ -107,8 +122,6 @@ namespace CrudOperation_CodeFirst.Controllers
         // GET: Employees/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            var depList = _context.Department_sk.ToList();
-            ViewBag.Department_Id = new SelectList(depList, nameof(Department.DepartmentId), nameof(Department.DepartmentName));
             if (id == null)
             {
                 return NotFound();
@@ -140,8 +153,6 @@ namespace CrudOperation_CodeFirst.Controllers
             {
                 return NotFound();
             }
-            
-           
                 try
                 {
                     if (ModelState.IsValid)

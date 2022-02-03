@@ -63,7 +63,7 @@ namespace CrudOperation_CodeFirst.Services
         {
 
 
-            var editData = _Context.Employee_sk.Where(x => x.DepartmentId == data.DepartmentId).FirstOrDefault();
+            var editData = _Context.Employee_sk.Where(x => x.EmployeeId== data.EmployeeId).FirstOrDefault();
             if (editData != null)
             {
                 editData.EmployeeName = data.EmployeeName;

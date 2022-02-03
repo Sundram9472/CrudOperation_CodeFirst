@@ -10,3 +10,9 @@
     </div>
  }
 
+@if (ViewData["Message"] != null)
+ {
+    <div class="alert  alert-danger">
+        <h2>@ViewData["Message"]</h2>
+    </div>
+ }

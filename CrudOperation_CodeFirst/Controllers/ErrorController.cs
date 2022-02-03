@@ -34,7 +34,6 @@ namespace CrudOperation_CodeFirst.Controllers
         public IActionResult HttpStatusCodeHandler(int statuscode)
         {
             var ExceptionHandlePathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
-            var exceptionMessage = ExceptionHandlePathFeature.Error.Message;
             switch (statuscode)
             {
                 case 404:
@@ -43,12 +42,10 @@ namespace CrudOperation_CodeFirst.Controllers
                     break;
 
                 case 500:
-                    ViewBag.ErrorMessage = " Internally Server Error Occured ";
                     return View("NotFound");
                     break;
 
                 default :
-                    ViewBag.ErrorMessage = exceptionMessage;
                     Boolean check = ErrorLogDB();
                     if(check)
                     {
@@ -64,18 +61,26 @@ namespace CrudOperation_CodeFirst.Controllers
 
         public Boolean ErrorLogDB()
         {
-            var ExceptionHandlePathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
-            var currentDateAndTimeToLoggedError = DateTime.Now;
-            var stackTrace = ExceptionHandlePathFeature.Error.StackTrace;
-            var exceptionMessage = ExceptionHandlePathFeature.Error.Message;
-            var errorId = Guid.NewGuid();
-            Data.ErrorId = errorId;
-            Data.LoggedOn = currentDateAndTimeToLoggedError;
-            Data.Message = "Sundram_"+exceptionMessage;
-            Data.StackTrace = stackTrace;
-            _context.Add(Data);
-            _context.SaveChanges();
-            return true;
+            try
+            {
+                var ExceptionHandlePathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+                ViewData["Message"] = ExceptionHandlePathFeature.Error.Message.ToString();
+                var currentDateAndTimeToLoggedError = DateTime.Now;
+                var stackTrace = ExceptionHandlePathFeature.Error.StackTrace;
+                var exceptionMessage = ExceptionHandlePathFeature.Error.Message;
+                var errorId = Guid.NewGuid();
+                Data.ErrorId = errorId;
+                Data.LoggedOn = currentDateAndTimeToLoggedError;
+                Data.Message = "Sundram_" + exceptionMessage;
+                Data.StackTrace = stackTrace;
+                _context.Add(Data);
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

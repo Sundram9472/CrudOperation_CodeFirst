@@ -3,8 +3,15 @@
 @{
     ViewData["Title"] = "Index";
 }
+@if(ViewData["Message"] != null)
+ {
+                <div class="btn btn-danger">
+                    <p>@ViewData["Message"]</p>
+                </div>
+ }
+<hr />
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-success text-white">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -22,9 +29,9 @@
                 @Html.DisplayFor(modelItem => item.DepartmentName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.DepartmentId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.DepartmentId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.DepartmentId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.DepartmentId" class="btn btn-secondary">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.DepartmentId" class="btn btn-primary">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.DepartmentId" class="btn btn-danger">Delete</a>
             </td>
         </tr>
 }
