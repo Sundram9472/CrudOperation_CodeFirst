@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CrudOperation_CodeFirst.Models;
 using CrudOperation_CodeFirst.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace CrudOperation_CodeFirst.Services
 {
@@ -17,14 +18,14 @@ namespace CrudOperation_CodeFirst.Services
 
         public async Task<IEnumerable<Department>> GetAllDepartment()
         {
-            var DataList = _Context.Department_sk.ToList();
-            return DataList;
+            var DataList = _Context.Department_sk.ToListAsync();
+            return await DataList;
         }
 
         public async Task<Department> GetDepartmentById(int? id)
         {
-            var Data = _Context.Department_sk.Where(x => x.DepartmentId == id).FirstOrDefault();
-            return Data;
+            var Data = _Context.Department_sk.Where(x => x.DepartmentId == id).FirstOrDefaultAsync();
+            return await Data;
         }
 
 

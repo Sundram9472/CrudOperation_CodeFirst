@@ -4,11 +4,14 @@
     Layout = "~/Views/Shared/_AjaxEmployee.cshtml";
 }
 <div class="container">
-    <h2>Department</h2>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="clearTextBox();">Add Employee</button><br /><br />
+    <h2>Employee</h2>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModalAdd" onclick="clearTextBox();">Add Employee</button><br /><br />
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
+                <th>
+                  Department Name
+                </th>
                 <th>
                     Employee ID
                 </th>
@@ -41,37 +44,73 @@
             </div>
             <div class="modal-body">
                 <form>
-                    <div class="form-group" id="DepID">
-                        <label for="depidList">Employee</label>
-                        <select id="op1">
-                            <option selected="selected">Select</option>
-                        </select>
+                    <div class="form-group"id="depname">
+                        <label for="DepartmentName"> Department Name</label>
+                        <input type="text" class="form-control" id="DepartmentName" disabled="disabled" />
                     </div>
                     <div class="form-group">
                         <label for="EmployeeId"> Employee ID</label>
-                        <input type="text" class="form-control" id="EmployeeID" placeholder="Id" disabled="disabled" />
+                        <input type="text" class="form-control" id="EmployeeID" disabled="disabled" />
                     </div>
                     <div class="form-group">
                         <label for="Name">Employee Name</label>
-                        <input type="text" class="form-control" id="EmployeeName" placeholder="Name" />
+                        <input type="text" class="form-control" id="EmployeeName" autocomplete="off" />
                     </div>
                     <div class="form-group">
                         <label for="Name">Employee Gmail</label>
-                        <input type="text" class="form-control" id="EmployeeGmail" placeholder="Name" />
+                        <input type="text" class="form-control" id="EmployeeGmail" autocomplete="off" />
                     </div>
                     <div class="form-group">
                         <label for="Name">Employee Contact</label>
-                        <input type="text" class="form-control" id="EmployeeContact" placeholder="Name" />
+                        <input type="text" class="form-control" id="EmployeeContact" autocomplete="off" />
                     </div>
                     <div class="form-group">
                         <label for="Name">Employee Adress</label>
-                        <input type="text" class="form-control" id="EmployeeAdress" placeholder="Name" />
+                        <input type="text" class="form-control" id="EmployeeAdress" autocomplete="off" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnUpdate" style="display:none;" onclick="Update();">Update</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="myModalAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group" id="DepID">
+                        <label for="depidList">Department</label>
+                        <select id="op1">
+                            <option selected="selected">Select Department</option>
+                        </select>
+                    </div> 
+                    <div class="form-group">
+                        <label for="Name">Employee Name</label>
+                        <input type="text" class="form-control" id="EmployeeNameAdd" autocomplete="off" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Name">Employee Gmail</label>
+                        <input type="text" class="form-control" id="EmployeeGmailAdd" autocomplete="off" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Name">Employee Contact</label>
+                        <input type="text" class="form-control" id="EmployeeContactAdd" autocomplete="off" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Name">Employee Adress</label>
+                        <input type="text" class="form-control" id="EmployeeAdressAdd" autocomplete="off" />
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" id="btnAdd" onclick="return AddEmployee();">AddEmployee</button>
-                <button type="button" class="btn btn-primary" id="btnUpdate" style="display:none;" onclick="Update();">Update</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -82,27 +121,29 @@
 
     $(document).ready(function () {
         getAllEmployee();
-        $('#op1').click()
-        { 
-            GetDepList();
+       $('#op1').click()
+        {
+            DepList();
         };
     });
 
     function getAllEmployee() {
         $.ajax({
             type: 'GET',
-            url: '/EmployeeAjax/AllDepList',
+            url: '/EmployeeAjax/AllEmpList',
             contentType: "application/json;charset=UTF-8",
             dataType: 'json',
             success: function (data) {
                 $('#tblBody').empty();
+
                 $.each(data, function (index, value) {
-                    var row = $('<tr><td>' + value.employeeId + '</td><td>'
-                        + value.employeeName + '</td><td>'
-                        + value.employeeGmail + '</td><td>'
-                        + value.employeeContact + '</td><td>'
-                        + value.employeeAdress +"</td><td>"
-                        + '<a href="#" onclick="return GetEmployeeByID( ' + value.employeeId + ' )">Edit</a> | <a href="#" onclick="return Delele( ' + value.employeeId + ' )">Delete</a> | <a href="#" onclick="return Details( ' + value.employeeId + ' )">Details</a>' + '</td><tr>')
+                    var row = $('<tr><td>' + value.departmentName+'</td><td>'
+                        + value.employees.employeeId + '</td><td>'
+                        + value.employees.employeeName + '</td><td>'
+                        + value.employees.employeeGmail + '</td><td>'
+                        + value.employees.employeeContact + '</td><td>'
+                        + value.employees.employeeAdress +"</td><td>"
+                        + '<a href="#" onclick="return GetEmployeeByID( ' + value.employees.employeeId + ' )" class="btn btn-primary">Edit</a> | <a href="#" onclick="return Delele( ' + value.employees.employeeId + ' )"class="btn btn-danger">Delete</a> | <a href="#" onclick="return Details( ' + value.employees.employeeId + ' )"class="btn btn-dark">Details</a>' + '</td><tr>')
                     $('.tbody').append(row);
                 });
             },
@@ -113,32 +154,7 @@
     }
     function Details(EmployeeID) {
         $('#DepID').hide();
-        $('#EmployeeID').css('border-color', 'lightgrey');
-        $('#EmployeeName').css('border-color', 'lightgrey');
-        $('#EmployeeGmail').css('border-color', 'lightgrey');
-        $('#EmployeeContact').css('border-color', 'lightgrey');
-        $('#EmployeeAdress').css('border-color', 'lightgrey');
-        $.ajax({
-            type: 'GET',
-            url: '/EmployeeAjax/Details/' + EmployeeID,
-            contentType: "application/json;charset=UTF-8",
-            dataType: 'json',
-            success: function (data) {
-                $('#EmployeeID').val(data.employeeId);
-                $('#EmployeeName').val(data.employeeName);
-                $('#EmployeeGmail').val(data.employeeGmail);
-                $('#EmployeeContact').val(data.employeeContact);
-                $('#EmployeeAdress').val(data.employeeAdress);
-                $('#myModal').modal('show');
-                $('#btnAdd').hide();
-            },
-            error: function (errormessage) {
-                alert(errormessage.responseText);
-            }
-        });
-        return false;
-    }
-    function GetEmployeeByID(EmployeeID) {
+        $('#DepartmentName').css('border-color', 'lightgrey');
         $('#EmployeeID').css('border-color', 'lightgrey');
         $('#EmployeeName').css('border-color', 'lightgrey');
         $('#EmployeeGmail').css('border-color', 'lightgrey');
@@ -151,11 +167,40 @@
             dataType: 'json',
             success: function (data) {
                 debugger
-                $('#EmployeeID').val(data.employeeId);
-                $('#EmployeeName').val(data.employeeName);
-                $('#EmployeeGmail').val(data.employeeGmail);
-                $('#EmployeeContact').val(data.employeeContact);
-                $('#EmployeeAdress').val(data.employeeAdress);
+                $('#DepartmentName').val(data.departmentName);
+                $('#EmployeeID').val(data.employees.employeeId);
+                $('#EmployeeName').val(data.employees.employeeName);
+                $('#EmployeeGmail').val(data.employees.employeeGmail);
+                $('#EmployeeContact').val(data.employees.employeeContact);
+                $('#EmployeeAdress').val(data.employees.employeeAdress);
+                $('#myModal').modal('show');
+                $('#btnAdd').hide();
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+        return false;
+    }
+    function GetEmployeeByID(EmployeeID) {
+        $('#DepartmentName').css('border-color', 'lightgrey');
+        $('#EmployeeID').css('border-color', 'lightgrey');
+        $('#EmployeeName').css('border-color', 'lightgrey');
+        $('#EmployeeGmail').css('border-color', 'lightgrey');
+        $('#EmployeeContact').css('border-color', 'lightgrey');
+        $('#EmployeeAdress').css('border-color', 'lightgrey');
+        $.ajax({
+            type: 'GET',
+            url: '/EmployeeAjax/Details/' + EmployeeID,
+            contentType: "application/json;charset=UTF-8",
+            dataType: 'json',
+            success: function (data) {
+                $('#DepartmentName').val(data.departmentName);
+                $('#EmployeeID').val(data.employees.employeeId);
+                $('#EmployeeName').val(data.employees.employeeName);
+                $('#EmployeeGmail').val(data.employees.employeeGmail);
+                $('#EmployeeContact').val(data.employees.employeeContact);
+                $('#EmployeeAdress').val(data.employees.employeeAdress);
                 $('#myModal').modal('show');
                 $('#btnUpdate').show();
                 $('#btnAdd').hide();
@@ -186,7 +231,7 @@
     }
 
     function Update() {
-        var res = validate();
+        var res = validateEdit();
         if (res == false) {
             return false;
         }
@@ -229,50 +274,45 @@
             return false;
         }
         debugger
-        var name = $('#EmployeeName').val()
-        var id = $('#EmployeeID').val()
-        var gmail = $('#EmployeeGmail').val()
-        var contact = $('#EmployeeContact').val()
-        var address = $('#EmployeeAdress').val()
+        var name = $('#EmployeeNameAdd').val()
+        var gmail = $('#EmployeeGmailAdd').val()
+        var contact = $('#EmployeeContactAdd').val()
+        var address = $('#EmployeeAdressAdd').val()
         var departmentId = $('#op1').val()
         var obj = {
-                        EmployeeName: name,
-                        EmployeeID: id,
-                        EmployeeGmail: gmail,
-                        EmployeeAdress: address,
-                        employeeContact: contact,
-                        departmentId: departmentId
+                    EmployeeName: name,
+                    EmployeeGmail: gmail,
+                    EmployeeAdress: address,
+                    employeeContact: contact,
+                    departmentId: departmentId
 
         }
         $.ajax({
             url: "/EmployeeAjax/Create",
             data: obj,
             type: "POST",
+            datatype: "JSON",
             success: function (data) {
                 $('.tbody').empty();
                 getAllEmployee();
-                $('#myModal').modal('hide');
+                $('#myModalAdd').modal('hide');
             },
             error: function (errormessage) {
                 alert(errormessage.responseText);
             }
         });
     }
-    function GetDepList() {
+    function DepList() {
         $.ajax({
-            url: "EmployeeAjax/GetDepList",
+            url: "/EmployeeAjax/AllDepList",
             datatype: "JSON",
+            contentType: "application/json;charset=UTF-8",
             type: "Get",
             success: function (data) {
-                debugger
-                $('#op1').empty();
                 for (var i = 0; i < data.length; i++) {
-                    var opt = new Option(data[i].departmentName, data[i].departmentId);
+                    var opt = new Option(data[i].departmentName,data[i].departmentId);
                     $("#op1").append(opt);
                 }
-            },
-            error: function (errormessage) {
-                alert(errormessage.responseText);
             }
         });
     }
@@ -293,6 +333,38 @@
     }
 
     function validate() {
+        var isValid = true;
+        if ($('#EmployeeNameAdd').val().trim() == "") {
+            $('#EmployeeNameAdd').css('border-color', 'Red');
+            isValid = false;
+        }
+        else {
+            $('#EmployeeNameAdd').css('border-color', 'lightgrey');
+        }
+        if ($('#EmployeeGmailAdd').val().trim() == "") {
+            $('#EmployeeGmailAdd').css('border-color', 'Red');
+            isValid = false;
+        }
+        else {
+            $('#EmployeeGmailAdd').css('border-color', 'lightgrey');
+        }
+        if ($('#EmployeeContactAdd').val().trim() == "") {
+            $('#EmployeeContactAdd').css('border-color', 'Red');
+            isValid = false;
+        }
+        else {
+            $('#EmployeeContactAdd').css('border-color', 'lightgrey');
+        }
+        if ($('#EmployeeAdressAdd').val().trim() == "") {
+            $('#EmployeeAdressAdd').css('border-color', 'Red');
+            isValid = false;
+        }
+        else {
+            $('#EmployeeAdressAdd').css('border-color', 'lightgrey');
+        }
+        return isValid;
+    }
+    function validateEdit() {
         var isValid = true;
         if ($('#EmployeeName').val().trim() == "") {
             $('#EmployeeName').css('border-color', 'Red');

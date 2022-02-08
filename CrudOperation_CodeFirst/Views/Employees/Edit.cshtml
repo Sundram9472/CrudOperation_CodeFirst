@@ -1,34 +1,34 @@
-﻿@model CrudOperation_CodeFirst.Models.Employee
-
+﻿@model CrudOperation_CodeFirst.Models.Department
 @{
     ViewData["Title"] = "Edit";
 }
 
 <hr />
+<h3>@Html.DisplayFor(model => model.employees.EmployeeName)</h3>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="EmployeeId" />
+            <input type="hidden" asp-for="employees.EmployeeId" />
             <div class="form-group">
-                <label asp-for="EmployeeName" class="control-label"></label>
-                <input asp-for="EmployeeName" class="form-control"  autocomplete="off"/>
-                <span asp-validation-for="EmployeeName" class="text-danger"></span>
+                <label asp-for="employees.EmployeeName" class="control-label"></label>
+                <input asp-for="employees.EmployeeName" class="form-control"  autocomplete="off"/>
+                <span asp-validation-for="employees.EmployeeName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="EmployeeGmail" class="control-label"></label>
-                <input asp-for="EmployeeGmail" class="form-control"  autocomplete="off"/>
-                <span asp-validation-for="EmployeeGmail" class="text-danger"></span>
+                <label asp-for="employees.EmployeeGmail" class="control-label"></label>
+                <input asp-for="employees.EmployeeGmail" class="form-control"  autocomplete="off"/>
+                <span asp-validation-for="employees.EmployeeGmail" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="EmployeeContact" class="control-label"></label>
-                <input asp-for="EmployeeContact" class="form-control"  autocomplete="off"/>
-                <span asp-validation-for="EmployeeContact" class="text-danger"></span>
+                <label asp-for="employees.EmployeeContact" class="control-label"></label>
+                <input asp-for="employees.EmployeeContact" class="form-control"  autocomplete="off"/>
+                <span asp-validation-for="employees.EmployeeContact" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="EmployeeAdress" class="control-label"></label>
-                <input asp-for="EmployeeAdress" class="form-control"  autocomplete="off"/>
-                <span asp-validation-for="EmployeeAdress" class="text-danger"></span>
+                <label asp-for="employees.EmployeeAdress" class="control-label"></label>
+                <input asp-for="employees.EmployeeAdress" class="form-control"  autocomplete="off"/>
+                <span asp-validation-for="employees.EmployeeAdress" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

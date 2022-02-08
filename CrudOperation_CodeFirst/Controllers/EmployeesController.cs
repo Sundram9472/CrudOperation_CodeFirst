@@ -11,6 +11,7 @@ using CrudOperation_CodeFirst.Services;
 
 namespace CrudOperation_CodeFirst.Controllers
 {
+    [Route("[Controller]/[action]")]
     public class EmployeesController : Controller
     {
         private readonly AppDbContext _context;
@@ -21,7 +22,7 @@ namespace CrudOperation_CodeFirst.Controllers
             _employeeDetails = contetxtE;
         }
 
-        // GET: Employees
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             try
@@ -42,7 +43,8 @@ namespace CrudOperation_CodeFirst.Controllers
             }
         }
 
-        // GET: Employees/Details/5
+        [Route("{id}")]
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             try
@@ -50,8 +52,10 @@ namespace CrudOperation_CodeFirst.Controllers
                 if (id != null && id > 0)
                 {
                     var employeeDetails = await _employeeDetails.GetmployeetById(id);
+                  
                     if (employeeDetails != null)
                     {
+                       
                         return View(employeeDetails);
                     }
                     else
@@ -70,7 +74,7 @@ namespace CrudOperation_CodeFirst.Controllers
             }
         }
 
-        // GET: Employees/Create
+        [HttpGet]
         public IActionResult Create()
         {
             try
@@ -119,7 +123,8 @@ namespace CrudOperation_CodeFirst.Controllers
             }
         }
 
-        // GET: Employees/Edit/5
+        [Route("{id}")]
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -145,19 +150,15 @@ namespace CrudOperation_CodeFirst.Controllers
             }
         }
 
-        [HttpPost]
+        [Route("{id}")]
+        [HttpPost,ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id,Employee employee)
+        public async Task<IActionResult> Update(Department data)
         {
-            if (id != employee.EmployeeId)
-            {
-                return NotFound();
-            }
                 try
                 {
-                    if (ModelState.IsValid)
-                    {
-                        Boolean editConfiremation = await _employeeDetails.EditEmployeeData(employee);
+                    
+                        Boolean editConfiremation = await _employeeDetails.EditEmployeeDataDep(data);
                         if (editConfiremation)
                         {
                             return RedirectToAction("Index");
@@ -166,20 +167,16 @@ namespace CrudOperation_CodeFirst.Controllers
                         {
                             return NotFound();
                         }
-                    }
-                    else
-                    {
-                        return NotFound();
-                    }
                 }
-                catch (DbUpdateConcurrencyException)
+                catch
                 {
-                    throw;
+                   throw new Exception("Model Is Not Validate Some Issue Occcured");
                 }
                
         }
 
-        // GET: Employees/Delete/5
+        [Route("{id}")]
+        [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
             try
@@ -207,7 +204,7 @@ namespace CrudOperation_CodeFirst.Controllers
             }
         }
 
-        // POST: Employees/Delete/5
+        [Route("{id}")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

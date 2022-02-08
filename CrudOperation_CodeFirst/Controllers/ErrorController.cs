@@ -41,6 +41,11 @@ namespace CrudOperation_CodeFirst.Controllers
                     return View("NotFound");
                     break;
 
+                case 405:
+                    ViewBag.ErrorMessage = "Sorry ! Method coudn't Be Found..!";
+                    return View("NotFound");
+                    break;
+
                 case 500:
                     return View("NotFound");
                     break;

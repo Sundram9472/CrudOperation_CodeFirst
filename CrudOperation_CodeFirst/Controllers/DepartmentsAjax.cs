@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CrudOperation_CodeFirst.Controllers
 {
+    [Route("[Controller]/[action]")]
     public class DepartmentsAjax : Controller
     {
         private readonly IDepartmentRepo _DepartmentDetails;
@@ -30,11 +31,13 @@ namespace CrudOperation_CodeFirst.Controllers
             return View();
         }
 
+        [HttpGet]
         public async Task<IActionResult> AllDepList()
         {
-            var data = await _DepartmentDetails.GetAllDepartment();
+           
             try
             {
+                var data = await _DepartmentDetails.GetAllDepartment();
                 if (data != null)
                 {
                     return new JsonResult(data);
@@ -71,6 +74,8 @@ namespace CrudOperation_CodeFirst.Controllers
            }
         }
 
+        [Route("{id}")]
+        [HttpGet]
         public async Task<IActionResult> Details(int? Id)
         {
             try
@@ -98,6 +103,7 @@ namespace CrudOperation_CodeFirst.Controllers
             }
         }
 
+        [Route("{id}")]
         [HttpPost]
         public async Task<IActionResult> Delete(int? Id)
         {
@@ -106,18 +112,20 @@ namespace CrudOperation_CodeFirst.Controllers
                 var checkEmployee = await _context.Employee_sk.CountAsync(x => x.DepartmentId == Id);
                 if (checkEmployee > 0)
                 {
-                    var deleteData = await _DepartmentDetails.DeleteDepartment(Id);
-                    if(deleteData != null)
-                    {
-                       return new JsonResult(true);
-                    }else
-                    {
-                        throw new Exception();
-                    }
+                    return BadRequest("You are Not Delete Department Beacause This Department Related Employee Found ! Firstly Remove Employee Then Remove Department");
                 }
                 else
                 {
-                    return BadRequest("You are Not Delete Department Beacause This Department Related Employee Found ! Firstly Remove Employee Then Remove Department");
+                    var deleteData = await _DepartmentDetails.DeleteDepartment(Id);
+                    if (deleteData != null)
+                    {
+                        return new JsonResult(true);
+                    }
+                    else
+                    {
+                        throw new Exception("Department Not Found");
+                    }
+                 
                 }
             }catch(Exception ex)
             {

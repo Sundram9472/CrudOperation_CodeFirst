@@ -11,6 +11,7 @@ using CrudOperation_CodeFirst.Services;
 
 namespace CrudOperation_CodeFirst.Controllers
 {
+    [Route("[Controller]/[action]")]
     public class DepartmentsController : Controller
     {
         private readonly IDepartmentRepo _DepartmentDetails;
@@ -21,14 +22,13 @@ namespace CrudOperation_CodeFirst.Controllers
             _Context = appdbcontext;
         }
 
-
-        // GET: Departments
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var allDepartment = await _DepartmentDetails.GetAllDepartment();
             try
             {
-                if(allDepartment != null)
+                var allDepartment = await _DepartmentDetails.GetAllDepartment();
+                if (allDepartment != null)
                 {
                     return View(allDepartment);
                 }
@@ -43,16 +43,18 @@ namespace CrudOperation_CodeFirst.Controllers
             }
         }
 
-        // GET: Departments/Details/5
+        [Route("{id}")]
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return View("Error","Error");
             }
-            var departmentDetailsById = await _DepartmentDetails.GetDepartmentById(id);
+          
             try
             {
+                var departmentDetailsById = await _DepartmentDetails.GetDepartmentById(id);
                 if (departmentDetailsById != null)
                 {
                     return View(departmentDetailsById);
@@ -68,12 +70,11 @@ namespace CrudOperation_CodeFirst.Controllers
             }
         }
 
-        // GET: Departments/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -101,16 +102,17 @@ namespace CrudOperation_CodeFirst.Controllers
             }
         }
 
-        // GET: Departments/Edit/5
+        [Route("{id}")]
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-              var departmentDetails = await _DepartmentDetails.GetDepartmentById(id);
             try
             {
+                var departmentDetails = await _DepartmentDetails.GetDepartmentById(id);
                 if (departmentDetails != null)
                 {
                     return View(departmentDetails);
@@ -127,40 +129,38 @@ namespace CrudOperation_CodeFirst.Controllers
             }
         }
 
-
+        [Route("{id}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,Department department)
         {
-            if (id != department.DepartmentId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
                 try
                 {
-                    var editConfiremation = await _DepartmentDetails.EditDepartmentData(department);
-                    if (editConfiremation != null)
+                    if (ModelState.IsValid)
                     {
-                        return RedirectToAction("Index");
+                        var editConfiremation = await _DepartmentDetails.EditDepartmentData(department);
+                        if (editConfiremation != null)
+                        {
+                            return RedirectToAction("Index");
+                        }
+                        else
+                        {
+                            return NotFound();
+                        }
                     }
                     else
                     {
-                        return NotFound();
+                        throw new Exception("Model Is Not Valid");
                     }
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception ex)
                 {
-                    throw;
+                     throw new Exception(ex.Message);
                 }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(department);
         }
 
-
+        [Route("{id}")]
+        [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -185,12 +185,11 @@ namespace CrudOperation_CodeFirst.Controllers
             }
         }
 
-        // POST: Departments/Delete/5
+        [Route("{id}")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-          
             try
             {
                 var CountEployee = await _Context.Employee_sk.CountAsync(x => x.DepartmentId == id);

@@ -9,7 +9,8 @@ namespace CrudOperation_CodeFirst.Services
         Task<bool> AddNewEmployee(Employee Data);
         Task<bool> DeleteEmployee(int? Id);
         Task<bool> EditEmployeeData(Employee data);
+        Task<bool> EditEmployeeDataDep(Department data);
         Task<IEnumerable<Employee>> GetAllEmployee();
-        Task<Employee> GetmployeetById(int? id);
+        Task<Department> GetmployeetById(int? id);
     }
 }

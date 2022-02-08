@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CrudOperation_CodeFirst.Models;
 using CrudOperation_CodeFirst.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace CrudOperation_CodeFirst.Services
 {
@@ -17,14 +18,17 @@ namespace CrudOperation_CodeFirst.Services
 
         public async Task<IEnumerable<Employee>> GetAllEmployee()
         {
-            var DataList = _Context.Employee_sk.ToList();
-            return DataList;
+            var DataList = _Context.Employee_sk.ToListAsync();
+            return await DataList;
         }
 
-        public async Task<Employee> GetmployeetById(int? id)
+        public async Task<Department> GetmployeetById(int? id)
         {
-            var employeeData = _Context.Employee_sk.Where(x => x.EmployeeId == id).FirstOrDefault();
-            return employeeData;
+            var query = _Context.Department_sk
+                                .Include(x => x.employees)
+                                .Where(x => x.employees.EmployeeId == id)
+                                .FirstOrDefaultAsync();
+            return await query;
         }
 
 
@@ -58,12 +62,32 @@ namespace CrudOperation_CodeFirst.Services
                 return false;
             }
         }
+        public async Task<Boolean> EditEmployeeDataDep(Department data)
+        {
 
+
+            var editData = _Context.Employee_sk.Where(x => x.EmployeeId == data.employees.EmployeeId).FirstOrDefault();
+            if (editData != null)
+            {
+                editData.EmployeeName = data.employees.EmployeeName;
+                editData.EmployeeGmail = data.employees.EmployeeGmail;
+                editData.EmployeeContact = data.employees.EmployeeContact;
+                editData.EmployeeAdress = data.employees.EmployeeAdress;
+                await _Context.SaveChangesAsync();
+                return true; ;
+
+            }
+            else
+            {
+                return false;
+            }
+        }
+      
         public async Task<Boolean> EditEmployeeData(Employee data)
         {
 
 
-            var editData = _Context.Employee_sk.Where(x => x.EmployeeId== data.EmployeeId).FirstOrDefault();
+            var editData = _Context.Employee_sk.Where(x => x.EmployeeId == data.EmployeeId).FirstOrDefault();
             if (editData != null)
             {
                 editData.EmployeeName = data.EmployeeName;
